@@ -1,31 +1,43 @@
-                <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
     />
+
+    <style>
+    .info-icon {
+        cursor: pointer; /* Change cursor to pointer */
+        margin-left: 5px; /* Space between label and icon */
+        position: relative; /* Positioning for tooltip */
+    }
+
+    .info-icon:hover::after {
+        content: attr(title); /* Use the title attribute for tooltip text */
+        position: absolute; /* Position the tooltip */
+        background-color: black; /* Background color of tooltip */
+        color: white; /* Text color */
+        padding: 5px; /* Padding around text */
+        border-radius: 5px; /* Rounded corners */
+        top: 20px; /* Positioning above the icon */
+        left: 0; /* Align to the left of the icon */
+        white-space: nowrap; /* Prevent text wrapping */
+        z-index: 10; /* Ensure tooltip is above other elements */
+    }
+</style>
+
   </head>
   <body>
     <section class="hero is-primary is-bold">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">Data Entry Form</h1>
+          <h1 class="title">CC Payout Form</h1>
         </div>
       </div>
     </section>
     <form id="form" class="container m-4 pl-4" method="POST">
-      <div class="field">
-        <label class="label">Date Swiped</label>
-        <div class="control">
-          <input
-            class="input"
-            type="date"
-            placeholder="Your Date Swiped"
-            name="Date Swiped"
-          required />
-        </div>
-      </div>
 
        <div class="field">
         <label class="label">First Name</label>
@@ -39,17 +51,6 @@
         </div>
       </div> 
 
-      <div class="field">
-        <label class="label">Middle Name</label>
-        <div class="control">
-          <input
-            class="input"
-            type="text"
-            placeholder="Your Middle Name"
-            name="Middle Name"
-          required />
-        </div>
-      </div> 
 
        <div class="field">
         <label class="label">Last Name</label>
@@ -63,66 +64,102 @@
         </div>
       </div> 
 
-      <div class="field">
-        <label class="label">Email</label>
-        <div class="control">
-          <input
-            class="input"
-            type="email"
-            placeholder="Your Email"
-            name="Email"
-          />
-        </div>
-      </div>
 
       <div class="field">
-        <label class="label">Bank</label>
+        <label class="label">CC Bank Name</label>
         <div class="control">
           <input
             class="input"
             type="text"
-            placeholder="Your Bank"
-            name="Bank"
+            placeholder="Your CC Bank Name"
+            name="CC Bank Name"
           required />
         </div>
       </div> 
 
       <div class="field">
-        <label class="label">Credit Card Number</label>
+        <label class="label">CC Number<span class="info-icon" title="Ex: XXXX-XXXX-XXXX-XXXX">ℹ️</span></label>
         <div class="control">
           <input
             class="input"
             type="text"
-            placeholder="Your Credit Card Number"
-            name="CCNO"
+            placeholder="Your CC Number"
+            name="CC Number"
           required />
         </div>
       </div> 
 
        <div class="field">
-        <label class="label">Amount</label>
-        <div class="control">
-          <input
+        <label class="label">Limit</label>
+         <div class="control">
+           <input
             class="input"
-            type="text"
-            placeholder="Your Amount"
-            name="Amount"
-          required />
+            type="number"
+            placeholder="Your Limit"
+            name="Limit"
+            id="limit"
+            required
+            oninput="calculatePayout()"
+           />
         </div>
-      </div> 
+       </div>
 
 
-      <div class="field">
+          <div class="field">
         <label class="label">Percentage</label>
         <div class="control">
-          <input
+            <input
+                class="input"
+                type="number"
+                placeholder="Your Percentage"
+                name="Percentage"
+                id="percentage"
+                required
+                oninput="calculatePayout()"
+            />
+        </div>
+         </div>
+
+          <div class="field">
+           <label class="label">Payout Amount<span class="info-icon" title="This is the fixed value.">ℹ️</span></label>
+           <div class="control">
+            <input
+                class="input"
+                type="text"
+                placeholder="Payout Amount"
+                name="Payout Amount"
+                id="payoutAmount"
+                readonly
+                style="background-color: lightgray; color: black;"
+            />
+         </div>
+         </div>
+
+         <div class="field">
+          <label class="label">Terms</label>
+        <div class="control">
+        <label class="radio">
+            <input type="radio" name="Terms" value="straight" onclick="toggleInstallmentTerms()" /> straight
+        </label>
+        <label class="radio">
+            <input type="radio" name="Terms" value="installment" onclick="toggleInstallmentTerms()" /> installment
+        </label>
+        </div>
+         </div>
+
+        <div class="field" id="installmentTermsField" style="display: none;">
+        <label class="label">Installment Payment Terms
+        <span class="info-icon" title="Count of Payout / Terms of Installment Ex: 1/6">ℹ️</span>
+         </label>
+         <div class="control">
+        <input
             class="input"
             type="text"
-            placeholder="Your Percentage"
-            name="Percentage"
-          required />
+            placeholder="Your Installment Payment Terms"
+            name="Installment Payment Terms"
+            id="installmentPaymentTerms" />
         </div>
-      </div> 
+         </div>
 
       <div class="field">
         <label class="label">Payout Date</label>
@@ -130,48 +167,11 @@
           <input
             class="input"
             type="date"
-            placeholder="Your Payout Date"
+            id="payoutDate"
             name="Payout Date"
-           required />
-        </div>
-      </div>
-
-
-      <div class="field">
-    <label class="label" for="first-name">Lead</label>
-    <div class="control">
-        <input
-            class="input"
-            type="text"
-            id="Lead
-            placeholder= "Your Lead"
-            name="Lead"
-            value="Ronalyn Paderanga"  
-            required
-        />
-    </div>
-    </div>
-
-     <div class="field">
-        <label class="label">Terms</label>
-        <div class="control">
-          <label class="radio">
-            <input type="radio" name="Terms" value="straight" /> straight
-          </label>
-          <label class="radio">
-            <input type="radio" name="Terms" value="installment" /> installment
-          </label>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Remarks</label>
-        <div class="control">
-          <textarea
-            class="textarea"
-            placeholder="Any Remarks"
-            name="Remarks"
-          ></textarea>
+            required 
+            onchange="formatPayoutDate()"
+           />
         </div>
       </div>
 
@@ -188,21 +188,59 @@
       </div> 
 
       <div class="field">
-            <label class="label">Attach Photo</label>
-            <div class="control">
-                <input class="input" type="file" name="file" accept="image/*" required />
-            </div>
-        </div>
+    <label class="label" for="first-name">Lead<span class="info-icon" title="This is the fixed value.">ℹ️</span></label>
+    <div class="control">
+        <input
+            class="input"
+            type="text"
+            id="Lead
+            placeholder= "Your Lead"
+            name="Lead"
+            value="Ronalyn Paderanga" 
+            readonly 
+            style="background-color: lightgray; color: black;"
+        />
+    </div>
+    </div>
+
+        <label class="label">Bank for Profit</label>
+
 
       <div class="field">
-        <label class="label">Agree to Terms</label>
+        <label class="label">Bank Name</label>
         <div class="control">
-          <label class="checkbox">
-            <input type="checkbox" name="Agree To Terms" value="yes" /> I agree
-            to the terms and conditions
-          </label>
+          <input
+            class="input"
+            type="text"
+            placeholder="Your Bank Name"
+            name="Bank Name"
+          required />
+        </div>
+      </div> 
+
+      <div class="field">
+        <label class="label">Account Number</label>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            placeholder="Your Account Number"
+            name="Account Number"
+          required />
+        </div>
+      </div> 
+
+        <div class="field">
+        <label class="label">Remarks</label>
+        <div class="control">
+          <textarea
+            class="textarea"
+            placeholder="Any Remarks"
+            name="Remarks"
+          ></textarea>
         </div>
       </div>
+
 
       <div class="field is-grouped">
         <div class="control">
@@ -230,55 +268,102 @@
         border-color: aquamarine;
       "></div>
 
-     <script>
-  document.getElementById("form").addEventListener("submit", function (e) {
-    e.preventDefault(); // Prevent the default form submission
-    document.getElementById("message").textContent = "Submitting..";
-    document.getElementById("message").style.display = "block";
-    document.getElementById("submit-button").disabled = true;
+    <script>
+    function calculatePayout() {
+        const limit = parseFloat(document.getElementById('limit').value) || 0;
+        const percentage = parseFloat(document.getElementById('percentage').value) || 0;
 
-    // Collect the form data
-    var formData = new FormData(this);
+        // Calculate payout amount
+        const payoutAmount = (limit * (percentage / 100)).toFixed(2);
 
-    // Send a POST request to your Google Apps Script
-    fetch(
-      "https://script.google.com/macros/s/AKfycbyA1VR1dQRfjArzHz58aZ3Tr72Y20SgiEebFow3IMbICiULz40Qx428a8K_F8mdg9F5HA/exec", // Replace with your actual script ID
-      {
-        method: "POST",
-        body: formData, // Use FormData directly
-      }
-    )
-      .then(function (response) {
-        // Check if the request was successful
-        if (response.ok) {
-          return response.json(); // Assuming your script returns JSON response
+        // Display the payout amount
+        document.getElementById('payoutAmount').value = payoutAmount;
+    }
+
+    function toggleInstallmentTerms() {
+        const installmentTermsField = document.getElementById('installmentTermsField');
+        const installmentRadio = document.querySelector('input[name="Terms"][value="installment"]');
+
+        // Show or hide the installment terms field based on the selected radio button
+        if (installmentRadio.checked) {
+            installmentTermsField.style.display = 'block'; // Show the field
         } else {
-          throw new Error("Failed to submit the form.");
+            installmentTermsField.style.display = 'none'; // Hide the field
         }
-      })
-      .then(function (data) {
-        // Display a success message
-        document.getElementById("message").textContent =
-          "Data submitted successfully!";
-        document.getElementById("message").style.display = "block";
-        document.getElementById("message").style.backgroundColor = "green";
-        document.getElementById("message").style.color = "beige";
-        document.getElementById("submit-button").disabled = false;
-        document.getElementById("form").reset();
+    }
 
-        setTimeout(function () {
-          document.getElementById("message").textContent = "";
-          document.getElementById("message").style.display = "none";
-        }, 2600);
-      })
-      .catch(function (error) {
-        // Handle errors, you can display an error message here
-        console.error(error);
-        document.getElementById("message").textContent =
-          "An error occurred while submitting the form.";
+    function formatPayoutDate() {
+            const dateInput = document.getElementById('payoutDate');
+            if (dateInput.value) { // Check if the value is not empty
+                const dateValue = new Date(dateInput.value);
+                
+                // Format the date to MM/DD/YYYY
+                const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
+                const formattedDate = dateValue.toLocaleDateString('en-US', options);
+
+                // Log the formatted date or use it as needed
+                console.log("Formatted Date: ", formattedDate); // This will log the date in MM/DD/YYYY format
+            } else {
+                console.log("No date selected.");
+            }
+        }
+
+    document.getElementById("form").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        document.getElementById("message").textContent = "Submitting..";
         document.getElementById("message").style.display = "block";
-      });
-  });
+        document.getElementById("submit-button").disabled = true;
+
+        // Format the payout date before submission
+            const dateInput = document.getElementById('payoutDate');
+            const dateValue = new Date(dateInput.value);
+            const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
+            const formattedDate = dateValue.toLocaleDateString('en-US', options);
+
+            // Set the formatted date in the form data
+            const formData = new FormData(this);
+            formData.set('Payout Date', formattedDate); // Update the Payout Date in the FormData
+
+
+        // Send a POST request to your Google Apps Script
+        fetch(
+            "https://script.google.com/macros/s/AKfycby-u40-fhnfLsXxiHgLTeb9v1vKuol3_IOgg3AJqCX2FMPPxM20KOEIvdlbGOEJY8xFSQ/exec", // Replace with your actual script ID
+            {
+                method: "POST",
+                body: formData, // Use FormData directly
+            }
+        )
+        .then(function (response) {
+            // Check if the request was successful
+            if (response.ok) {
+                return response.json(); // Assuming your script returns JSON response
+            } else {
+                throw new Error("Failed to submit the form.");
+            }
+        })
+        .then(function (data) {
+            // Display a success message
+            document.getElementById("message").textContent =
+                "Data submitted successfully!";
+            document.getElementById("message").style.display = "block";
+            document.getElementById("message").style.backgroundColor = "green";
+            document.getElementById("message").style.color = "beige";
+            document.getElementById("submit-button").disabled = false;
+            document.getElementById("form").reset();
+
+            setTimeout(function () {
+                document.getElementById("message").textContent = "";
+                document.getElementById("message").style.display = "none";
+            }, 2600);
+        })
+        .catch(function (error) {
+            // Handle errors, you can display an error message here
+            console.error(error);
+            document.getElementById("message").textContent =
+                "An error occurred while submitting the form.";
+            document.getElementById("message").style.display = "block";
+        });
+    });
 </script>
   </body>
 </html>
