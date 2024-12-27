@@ -33,107 +33,122 @@
     <section class="hero is-primary is-bold">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">CC Payout Form</h1>
+          <h1 class="title">CREDIT CARD Payout Form</h1>
         </div>
       </div>
     </section>
     <form id="form" class="container m-4 pl-4" method="POST">
 
        <div class="field">
-        <label class="label">First Name</label>
+        <label class="label">Bank Name</label>
         <div class="control">
           <input
             class="input"
             type="text"
-            placeholder="Your First Name"
-            name="First Name"
+            placeholder="Your Bank Name"
+            name="Bank Name"
           required />
         </div>
       </div> 
 
 
        <div class="field">
-        <label class="label">Last Name</label>
+        <label class="label">Name</label>
         <div class="control">
           <input
             class="input"
             type="text"
-            placeholder="Your Last Name"
-            name="Last Name"
+            placeholder="Your First and Last Name"
+            name="Name"
           required />
         </div>
       </div> 
 
 
       <div class="field">
-        <label class="label">CC Bank Name</label>
+        <label class="label">16 Digit Credit Card Number<span class="info-icon" title="Ex: XXXX-XXXX-XXXX-XXXX">ℹ️</span></label>
         <div class="control">
           <input
             class="input"
             type="text"
-            placeholder="Your CC Bank Name"
-            name="CC Bank Name"
-          required />
-        </div>
-      </div> 
-
-      <div class="field">
-        <label class="label">CC Number<span class="info-icon" title="Ex: XXXX-XXXX-XXXX-XXXX">ℹ️</span></label>
-        <div class="control">
-          <input
-            class="input"
-            type="text"
-            placeholder="Your CC Number"
+            placeholder="XXXX-XXXX-XXXX-XXXX"
             name="CC Number"
           required />
         </div>
       </div> 
 
-       <div class="field">
-        <label class="label">Limit</label>
-         <div class="control">
-           <input
+      <div class="field">
+        <label class="label">Transaction Date</label>
+        <div class="control">
+          <input
             class="input"
-            type="number"
-            placeholder="Your Limit"
-            name="Limit"
-            id="limit"
-            required
-            oninput="calculatePayout()"
+            type="date"
+            id="payoutDate"
+            name="Transaction Date"
+            required 
+            onchange="formatPayoutDate()"
            />
         </div>
-       </div>
+      </div>
 
-
-          <div class="field">
-        <label class="label">Percentage</label>
+      <div class="field">
+        <label class="label">Payout Date</label>
         <div class="control">
-            <input
-                class="input"
-                type="number"
-                placeholder="Your Percentage"
-                name="Percentage"
-                id="percentage"
-                required
-                oninput="calculatePayout()"
-            />
+          <input
+            class="input"
+            type="date"
+            id="payoutDate"
+            name="Payout Date"
+            required 
+            onchange="formatPayoutDate()"
+           />
         </div>
-         </div>
+      </div>
+
+       <div class="field">
+    <label class="label">Credit Amount</label>
+    <div class="control">
+        <input
+            class="input"
+            type="text"
+            placeholder="Your Credit Amount"
+            name="Credit Amount"
+            id="limit"
+            required
+            oninput="validateNumber(this); calculatePayout();"
+        />
+    </div>
+    </div>
+
+        <div class="field">
+    <label class="label">Percent Profit</label>
+    <div class="control">
+        <input
+            class="input"
+            type="text" 
+            placeholder="Input number only"
+            name="Percentage"
+            id="percentage"
+            required
+            oninput="validateNumber(this); updatePercentage(this); calculatePayout();"
+        />
+    </div>
+    </div>
+
 
           <div class="field">
-           <label class="label">Payout Amount<span class="info-icon" title="This is the fixed value.">ℹ️</span></label>
-           <div class="control">
-            <input
-                class="input"
-                type="text"
-                placeholder="Payout Amount"
-                name="Payout Amount"
-                id="payoutAmount"
-                readonly
-                style="background-color: lightgray; color: black;"
-            />
-         </div>
-         </div>
+    <label class="label">Payout Amount</label>
+    <div class="control">
+        <input
+            class="input"
+            type="text"
+            placeholder="Calculated Payout"
+            id="payout"
+            readonly
+            style="background-color: lightgray; color: black;"
+        />
+    </div>
+    </div>
 
          <div class="field">
           <label class="label">Terms</label>
@@ -155,25 +170,11 @@
         <input
             class="input"
             type="text"
-            placeholder="Your Installment Payment Terms"
+            placeholder="X / X"
             name="Installment Payment Terms"
             id="installmentPaymentTerms" />
         </div>
          </div>
-
-      <div class="field">
-        <label class="label">Payout Date</label>
-        <div class="control">
-          <input
-            class="input"
-            type="date"
-            id="payoutDate"
-            name="Payout Date"
-            required 
-            onchange="formatPayoutDate()"
-           />
-        </div>
-      </div>
 
       <div class="field">
         <label class="label">Reference Number</label>
@@ -185,7 +186,7 @@
             name="Reference Number"
             required />
         </div>
-      </div> 
+     
 
       <div class="field">
     <label class="label" for="first-name">Lead<span class="info-icon" title="This is the fixed value.">ℹ️</span></label>
@@ -193,9 +194,8 @@
         <input
             class="input"
             type="text"
-            id="Lead
+            id="Lead"
             placeholder= "Your Lead"
-            name="Lead"
             value="Ronalyn Paderanga" 
             readonly 
             style="background-color: lightgray; color: black;"
@@ -203,32 +203,6 @@
     </div>
     </div>
 
-        <label class="label">Bank for Profit</label>
-
-
-      <div class="field">
-        <label class="label">Bank Name</label>
-        <div class="control">
-          <input
-            class="input"
-            type="text"
-            placeholder="Your Bank Name"
-            name="Bank Name"
-          required />
-        </div>
-      </div> 
-
-      <div class="field">
-        <label class="label">Account Number</label>
-        <div class="control">
-          <input
-            class="input"
-            type="text"
-            placeholder="Your Account Number"
-            name="Account Number"
-          required />
-        </div>
-      </div> 
 
         <div class="field">
         <label class="label">Remarks</label>
@@ -269,15 +243,30 @@
       "></div>
 
     <script>
+      function validateNumber(input) {
+        // Remove any non-numeric characters (except for decimal point)
+        input.value = input.value.replace(/[^0-9.]/g, '');
+    }
     function calculatePayout() {
-        const limit = parseFloat(document.getElementById('limit').value) || 0;
-        const percentage = parseFloat(document.getElementById('percentage').value) || 0;
+        const creditAmount = parseFloat(document.getElementById('limit').value) || 0;
+        const percentageInput = document.getElementById('percentage').value;
+        const percentageValue = parseFloat(percentageInput.replace('%', '')) || 0;
 
-        // Calculate payout amount
-        const payoutAmount = (limit * (percentage / 100)).toFixed(2);
+        // Calculate the payout
+        const payout = (creditAmount * (percentageValue / 100)).toFixed(2);
 
-        // Display the payout amount
-        document.getElementById('payoutAmount').value = payoutAmount;
+        // Display the payout in the payout input field
+        document.getElementById('payout').value = payout;
+    }
+    function updatePercentage(input) {
+        let value = input.value;
+
+        // If the value is not empty, append a percent sign
+        if (value) {
+            input.value = value ;
+        } else {
+            input.value = '';
+        }
     }
 
     function toggleInstallmentTerms() {
@@ -307,6 +296,8 @@
                 console.log("No date selected.");
             }
         }
+
+
 
     document.getElementById("form").addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent the default form submission
