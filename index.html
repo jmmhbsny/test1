@@ -41,15 +41,17 @@
 
        <div class="field">
         <label class="label">Bank Name</label>
-        <div class="control">
-          <input
-            class="input"
-            type="text"
-            placeholder="Your Bank Name"
-            name="Bank Name"
-          required />
-        </div>
-      </div> 
+          <div class="control">
+              <input
+                  class="input"
+                  type="text"
+                  placeholder="Your Bank Name"
+                  name="Bank Name"
+                  required
+                  oninput="this.value = this.value.toUpperCase();" 
+              />
+          </div>
+      </div>
 
 
        <div class="field">
@@ -66,16 +68,19 @@
 
 
       <div class="field">
-        <label class="label">16 Digit Credit Card Number<span class="info-icon" title="Ex: XXXX-XXXX-XXXX-XXXX">ℹ️</span></label>
-        <div class="control">
-          <input
+       <label class="label">16 Digit Credit Card Number<span class="info-icon" title="Ex: XXXX-XXXX-XXXX-XXXX">ℹ️</span></label>
+           <div class="control">
+            <input
             class="input"
             type="text"
             placeholder="XXXX-XXXX-XXXX-XXXX"
             name="CC Number"
-          required />
-        </div>
-      </div> 
+            pattern="^\d{4}-\d{4}-\d{4}-\d{4}$"
+            title="Please enter a valid credit card number in the format: 1234-1234-1234-1234"
+            required
+             />
+      </div>
+     </div>
 
       <div class="field">
         <label class="label">Transaction Date</label>
@@ -105,7 +110,7 @@
         </div>
       </div>
 
-       <div class="field">
+<div class="field">
     <label class="label">Credit Amount</label>
     <div class="control">
         <input
@@ -115,10 +120,10 @@
             name="Credit Amount"
             id="limit"
             required
-            oninput="validateNumber(this); calculatePayout();"
+            oninput="formatNumber(this); calculatePayout();"
         />
     </div>
-    </div>
+</div>
 
         <div class="field">
     <label class="label">Percent Profit</label>
@@ -243,102 +248,148 @@
       "></div>
 
     <script>
-      function validateNumber(input) {
-        // Remove any non-numeric characters (except for decimal point)
-        input.value = input.value.replace(/[^0-9.]/g, '');
+
+function validateNumber(input) {
+    // Remove any non-numeric characters (except for decimal point)
+    input.value = input.value.replace(/[^0-9.]/g, '');
+}
+
+function calculatePayout() {
+    const creditAmount = parseFloat(document.getElementById('limit').value) || 0;
+    const percentageInput = document.getElementById('percentage').value;
+    const percentageValue = parseFloat(percentageInput.replace('%', '')) || 0;
+
+    // Calculate the payout
+    const payout = (creditAmount * (percentageValue / 100)).toFixed(2);
+
+    // Display the payout in the payout input field
+    document.getElementById('payout').value = payout;
+}
+
+function updatePercentage(input) {
+    let value = input.value;
+
+    // If the value is not empty, append a percent sign
+    if (value) {
+        input.value = value;
+    } else {
+        input.value = '';
     }
-    function calculatePayout() {
-        const creditAmount = parseFloat(document.getElementById('limit').value) || 0;
-        const percentageInput = document.getElementById('percentage').value;
-        const percentageValue = parseFloat(percentageInput.replace('%', '')) || 0;
+}
 
-        // Calculate the payout
-        const payout = (creditAmount * (percentageValue / 100)).toFixed(2);
+function toggleInstallmentTerms() {
+    const installmentTermsField = document.getElementById('installmentTermsField');
+    const installmentRadio = document.querySelector('input[name="Terms"][value="installment"]');
 
-        // Display the payout in the payout input field
-        document.getElementById('payout').value = payout;
+    // Show or hide the installment terms field based on the selected radio button
+    if (installmentRadio.checked) {
+        installmentTermsField.style.display = 'block'; // Show the field
+    } else {
+        installmentTermsField.style.display = 'none'; // Hide the field
     }
-    function updatePercentage(input) {
-        let value = input.value;
+}
 
-        // If the value is not empty, append a percent sign
-        if (value) {
-            input.value = value ;
+function formatPayoutDate() {
+    const dateInput = document.getElementById('payoutDate');
+    if (dateInput.value) { // Check if the value is not empty
+        const dateValue = new Date(dateInput.value);
+        
+        // Format the date to MM/DD/YYYY
+        const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
+        const formattedDate = dateValue.toLocaleDateString('en-US', options);
+
+        // Log the formatted date or use it as needed
+        console.log("Formatted Date: ", formattedDate); // This will log the date in MM/DD/YYYY format
+    } else {
+        console.log("No date selected.");
+    }
+}
+
+function formatNumber(input) {
+    // Remove any non-digit characters (except for decimal point)
+    let value = input.value.replace(/[^0-9.]/g, '');
+
+    // Convert to a number and format with commas
+    if (value) {
+        input.value = Number(value).toLocaleString('en-US', { maximumFractionDigits: 2 });
+    } else {
+        input.value = ''; // Clear the input if no value
+    }
+}
+
+ document.getElementById('bankNameInput').addEventListener('input', function() {
+        this.value = this.value.toUpperCase(); // Convert input to uppercase
+    });
+
+// Credit Card Validation
+document.querySelector('input[name="CC Number"]').addEventListener('input', function() {
+    // Remove any non-digit characters
+    let input = this.value.replace(/\D/g, '');
+
+    // Limit to 16 digits
+    if (input.length > 16) {
+        input = input.slice(0, 16);
+    }
+
+    // Format the input with hyphens after every 4 digits
+    const formattedInput = input.replace(/(\d{4})(?=\d)/g, '$1-');
+
+    // Update the input value
+    this.value = formattedInput;
+
+    // Validate the formatted input
+    const regex = /^\d{4}-\d{4}-\d{4}-\d{4}$/;
+
+    // Check if the input is less than 16 digits
+    if (input.length < 16) {
+        this.setCustomValidity("Please enter exactly 16 digits.");
+    } else if (!regex.test(formattedInput)) {
+        this.setCustomValidity("Please enter a valid credit card number in the format: 1234-1234-1234-1234");
+    } else {
+        this.setCustomValidity(""); // Clear any custom validity message
+    }
+});
+
+
+document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault(); // Prevent the default form submission
+    document.getElementById("message").textContent = "Submitting..";
+    document.getElementById("message").style.display = "block";
+    document.getElementById("submit-button").disabled = true;
+
+    // Format the payout date before submission
+    const dateInput = document.getElementById('payoutDate');
+    const dateValue = new Date(dateInput.value);
+    const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
+    const formattedDate = dateValue.toLocaleDateString('en-US', options);
+
+    // Set the formatted date in the form data
+    const formData = new FormData(this);
+    formData.set('Payout Date', formattedDate); // Update the Payout Date in the FormData
+
+    // Send a POST request to your Google Apps Script
+    fetch(
+        "https://script.google.com/macros/s/AKfycby-u40-fhnfLsXxiHgLTeb9v1vKuol3_IOgg3AJqCX2FMPPxM20KOEIvdlbGOEJY8xFSQ/exec", // Replace with your actual script ID
+        {
+            method: "POST",
+            body: formData, // Use FormData directly
+        }
+    )
+    .then(function (response) {
+        // Check if the request was successful
+        if (response.ok) {
+            return response.json(); // Assuming your script returns JSON response
         } else {
-            input.value = '';
+            throw new Error("Failed to submit the form.");
         }
-    }
-
-    function toggleInstallmentTerms() {
-        const installmentTermsField = document.getElementById('installmentTermsField');
-        const installmentRadio = document.querySelector('input[name="Terms"][value="installment"]');
-
-        // Show or hide the installment terms field based on the selected radio button
-        if (installmentRadio.checked) {
-            installmentTermsField.style.display = 'block'; // Show the field
-        } else {
-            installmentTermsField.style.display = 'none'; // Hide the field
-        }
-    }
-
-    function formatPayoutDate() {
-            const dateInput = document.getElementById('payoutDate');
-            if (dateInput.value) { // Check if the value is not empty
-                const dateValue = new Date(dateInput.value);
-                
-                // Format the date to MM/DD/YYYY
-                const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
-                const formattedDate = dateValue.toLocaleDateString('en-US', options);
-
-                // Log the formatted date or use it as needed
-                console.log("Formatted Date: ", formattedDate); // This will log the date in MM/DD/YYYY format
-            } else {
-                console.log("No date selected.");
-            }
-        }
-
-
-
-    document.getElementById("form").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent the default form submission
-        document.getElementById("message").textContent = "Submitting..";
+    })
+    .then(function (data) {
+        // Display a success message
+        document.getElementById("message").textContent =
+            "Data submitted successfully!";
         document.getElementById("message").style.display = "block";
-        document.getElementById("submit-button").disabled = true;
-
-        // Format the payout date before submission
-            const dateInput = document.getElementById('payoutDate');
-            const dateValue = new Date(dateInput.value);
-            const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
-            const formattedDate = dateValue.toLocaleDateString('en-US', options);
-
-            // Set the formatted date in the form data
-            const formData = new FormData(this);
-            formData.set('Payout Date', formattedDate); // Update the Payout Date in the FormData
-
-
-        // Send a POST request to your Google Apps Script
-        fetch(
-            "https://script.google.com/macros/s/AKfycby-u40-fhnfLsXxiHgLTeb9v1vKuol3_IOgg3AJqCX2FMPPxM20KOEIvdlbGOEJY8xFSQ/exec", // Replace with your actual script ID
-            {
-                method: "POST",
-                body: formData, // Use FormData directly
-            }
-        )
-        .then(function (response) {
-            // Check if the request was successful
-            if (response.ok) {
-                return response.json(); // Assuming your script returns JSON response
-            } else {
-                throw new Error("Failed to submit the form.");
-            }
-        })
-        .then(function (data) {
-            // Display a success message
-            document.getElementById("message").textContent =
-                "Data submitted successfully!";
-            document.getElementById("message").style.display = "block";
-            document.getElementById("message").style.backgroundColor = "green";
-            document.getElementById("message").style.color = "beige";
+        document.getElementById("message").style.backgroundColor = "green";
+        document.getElementById("message").style.color = "beige";
             document.getElementById("submit-button").disabled = false;
             document.getElementById("form").reset();
 
